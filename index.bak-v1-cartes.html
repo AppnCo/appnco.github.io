@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>App&amp;Co — Applications &amp; sites web sur mesure</title>
+<meta name="description" content="App&Co conçoit des applications, des sites web et des outils métier sur mesure pour les artisans, restaurants, loueurs et commerces.">
+<meta name="theme-color" content="#0C0C10">
+<script>document.documentElement.className='js'</script>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+/*FONT*/@font-face{font-family:Outfit;src:url(fonts/Outfit.ttf) format("truetype");font-weight:100 900;font-display:swap}/*FONT*/
+:root{--noir:#0C0C10;--carte:#15151C;--trait:#24242E;--blanc:#fff;--gris:#A3A6B4;--bleu:#2F5BFF;--bleu-clair:#6E8CFF}
+*{box-sizing:border-box;margin:0}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{background:var(--noir);color:var(--blanc);font-family:Outfit,system-ui,sans-serif;font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.conteneur{max-width:1080px;margin:0 auto;padding:0 22px}
+section{padding:72px 0}
+h1{font-size:clamp(2.3rem,7.5vw,4.4rem);line-height:1.04;font-weight:700;letter-spacing:-.02em}
+h2{font-size:clamp(1.7rem,4.6vw,2.6rem);line-height:1.12;font-weight:700;letter-spacing:-.015em;margin-bottom:14px}
+h3{font-size:1.2rem;font-weight:600;margin-bottom:8px}
+.sur{color:var(--bleu-clair);font-weight:600;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px}
+.chapo{color:var(--gris);font-size:1.12rem;max-width:620px}
+.bleu{color:var(--bleu)}
+
+/* logo */
+.logo{display:inline-flex;align-items:center;gap:.3em;font-weight:700;font-size:1.45rem;letter-spacing:-.01em}
+.icone{display:inline-grid;place-items:center;width:1.12em;height:1.12em;border-radius:25%;background:var(--bleu);color:#fff;flex:none}
+.icone span{font-size:.82em;line-height:1;transform:translateY(-.02em)}
+
+/* barre du haut */
+header{position:sticky;top:0;z-index:20;background:rgba(12,12,16,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--trait)}
+header .conteneur{display:flex;align-items:center;justify-content:space-between;height:64px}
+nav{display:flex;gap:26px;align-items:center;font-size:.95rem;color:var(--gris)}
+nav a:hover{color:#fff}
+nav .lien{display:none}
+@media(min-width:760px){nav .lien{display:inline}}
+
+.bouton{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--bleu);color:#fff;font-weight:600;font-size:1rem;padding:14px 24px;border-radius:14px;border:0;cursor:pointer;font-family:inherit;transition:transform .15s,background .15s}
+.bouton:hover{background:#4169ff;transform:translateY(-1px)}
+.bouton.petit{padding:10px 16px;font-size:.92rem;border-radius:11px}
+.bouton.contour{background:transparent;border:1px solid var(--trait);color:#fff}
+.bouton.contour:hover{border-color:#3a3a48;background:var(--carte)}
+
+/* accueil */
+.accueil{padding:84px 0 64px}
+.accueil p{margin:22px 0 32px}
+.actions{display:flex;flex-wrap:wrap;gap:12px}
+
+.grille{display:grid;gap:16px;margin-top:34px}
+@media(min-width:760px){.grille.trois{grid-template-columns:repeat(3,1fr)}.grille.deux{grid-template-columns:repeat(2,1fr)}.grille.quatre{grid-template-columns:repeat(4,1fr)}}
+.carte{background:var(--carte);border:1px solid var(--trait);border-radius:20px;padding:26px}
+.carte p{color:var(--gris);font-size:.98rem}
+.pastille{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:13px;background:rgba(47,91,255,.14);color:var(--bleu-clair);font-weight:700;margin-bottom:16px}
+.carte ul{list-style:none;padding:0;margin-top:14px;color:var(--gris);font-size:.95rem}
+.carte li{padding:7px 0 7px 22px;position:relative;border-top:1px solid var(--trait)}
+.carte li::before{content:"";position:absolute;left:2px;top:15px;width:8px;height:8px;border-radius:3px;background:var(--bleu)}
+.etape{font-size:.8rem;color:var(--bleu-clair);font-weight:600;letter-spacing:.12em;margin-bottom:10px}
+.bande{background:#101016;border-top:1px solid var(--trait);border-bottom:1px solid var(--trait)}
+
+/* contact */
+.contact{text-align:center}
+.contact .chapo{margin:0 auto 30px}
+.contact .actions{justify-content:center}
+footer{border-top:1px solid var(--trait);padding:30px 0 44px;color:var(--gris);font-size:.9rem}
+footer .conteneur{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
+
+/* apparition au défilement */
+html.js .voile{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+html.js .voile.vu{opacity:1;transform:none}
+
+/* écran d'ouverture : le point tombe, devient l'icône, le & surgit, le nom sort */
+#ouverture{position:fixed;inset:0;z-index:100;background:var(--noir);animation:ouv-fond .6s ease 3.05s forwards,ouv-fin .01s linear 3.7s forwards}
+/* le logo de la barre reste cache tant que celui de l'ouverture n'est pas arrive dessus */
+header .logo{animation:ouv-cible .01s linear 3.62s backwards}
+html.deja header .logo{animation:none}
+@keyframes ouv-cible{from{opacity:0}}
+#ouverture .scene{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;font-weight:700;font-size:clamp(34px,9vw,64px);letter-spacing:-.01em;line-height:1.55;
+  animation:ouv-monte .85s cubic-bezier(.65,0,.35,1) 2.75s forwards}
+#ouverture .ic{width:.4em;height:.4em;border-radius:50%;background:var(--bleu);display:grid;place-items:center;flex:none;
+  animation:ouv-chute .78s cubic-bezier(.5,0,1,.55) both,ouv-forme .5s cubic-bezier(.34,1.7,.64,1) .82s forwards,ouv-taille .7s cubic-bezier(.65,0,.35,1) 1.75s forwards}
+#ouverture .ic span{color:#fff;font-size:.82em;line-height:1;opacity:0;transform:scale(0) rotate(-38deg);animation:ouv-esp .6s cubic-bezier(.34,1.9,.64,1) 1.04s forwards}
+#ouverture .nom{white-space:nowrap;overflow:hidden;max-width:0;opacity:0;padding-left:0;animation:ouv-nom .8s cubic-bezier(.16,1,.3,1) 1.8s forwards}
+/* le logo monte se poser sur celui de la barre du haut (meme position, meme taille) */
+@keyframes ouv-monte{to{left:max(22px,calc(50vw - 518px));top:32px;transform:translate(0,-50%);font-size:1.45rem}}
+@keyframes ouv-fond{to{background-color:transparent}}
+@keyframes ouv-fin{to{visibility:hidden}}
+@keyframes ouv-chute{0%{transform:translateY(-60vh)}55%{transform:translateY(0) scale(1.3,.7)}72%{transform:translateY(-16vh) scale(1)}100%{transform:translateY(0)}}
+@keyframes ouv-forme{to{width:1.55em;height:1.55em;border-radius:25%}}
+@keyframes ouv-taille{from{width:1.55em;height:1.55em}to{width:1.12em;height:1.12em;border-radius:25%}}
+@keyframes ouv-esp{to{opacity:1;transform:none}}
+@keyframes ouv-nom{to{max-width:6em;opacity:1;padding-left:.3em}}
+@media(prefers-reduced-motion:reduce){#ouverture{display:none}header .logo{animation:none}html.js .voile{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<div id="ouverture" aria-hidden="true"><div class="scene"><div class="ic"><span>&amp;</span></div><div class="nom">App<span class="bleu">&amp;</span>Co</div></div></div>
+
+<header>
+  <div class="conteneur">
+    <a class="logo" href="#haut" aria-label="App&Co, retour en haut"><span class="icone"><span>&amp;</span></span><span>App<span class="bleu">&amp;</span>Co</span></a>
+    <nav>
+      <a class="lien" href="#services">Services</a>
+      <a class="lien" href="#metiers">Pour qui</a>
+      <a class="lien" href="#materiel">Matériel</a>
+      <a class="lien" href="#methode">Méthode</a>
+      <a class="bouton petit" href="#contact">Nous contacter</a>
+    </nav>
+  </div>
+</header>
+
+<main id="haut">
+  <section class="accueil">
+    <div class="conteneur">
+      <div class="sur">Applications · Sites web · Outils métier · Matériel</div>
+      <h1>Applications <span class="bleu">&amp;</span> sites web sur mesure.</h1>
+      <p class="chapo">Des outils pensés pour votre métier. On simplifie votre quotidien.</p>
+      <div class="actions">
+        <a class="bouton" href="#contact">Parler de votre projet</a>
+        <a class="bouton contour" href="#services">Voir ce que l'on fait</a>
+        <button class="bouton contour" id="installer" hidden>Installer l'application</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="services" class="bande">
+    <div class="conteneur">
+      <div class="sur voile">Ce que l'on fait</div>
+      <h2 class="voile">Trois façons de vous faire gagner du temps.</h2>
+      <p class="chapo voile">Chaque projet part de votre façon de travailler, pas d'un modèle tout fait.</p>
+      <div class="grille trois">
+        <article class="carte voile"><div class="pastille">01</div><h3>Application sur mesure</h3><p>Une application à votre nom, installée sur le téléphone de vos clients : réservations, notifications, suivi, paiement d'acompte.</p></article>
+        <article class="carte voile"><div class="pastille">02</div><h3>Site web</h3><p>Un site clair et rapide, lisible sur téléphone, qui présente votre activité et transforme les visiteurs en demandes.</p></article>
+        <article class="carte voile"><div class="pastille">03</div><h3>Outil métier</h3><p>Le logiciel de gestion de votre équipe : interventions, rapports, contrats, planning, tableau de bord. Tout au même endroit.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="metiers">
+    <div class="conteneur">
+      <div class="sur voile">Pour qui</div>
+      <h2 class="voile">Quel que soit votre métier.</h2>
+      <p class="chapo voile">Nous partons de votre besoin, pas d'une liste de professions. Voici ce que nous savons résoudre.</p>
+      <div class="grille trois">
+        <article class="carte voile"><h3>Vos équipes sur le terrain</h3><p>Maintenance, sécurité incendie, bâtiment, nettoyage, gardiennage.</p><ul><li>Interventions et rapports saisis sur place</li><li>Photos horodatées et signature du client</li><li>Planning et suivi des équipes</li></ul></article>
+        <article class="carte voile"><h3>Vos contrats et vos preuves</h3><p>Location, dépannage, transport, événementiel.</p><ul><li>Contrats et états des lieux sur écran</li><li>Signature au doigt, pièces en photo</li><li>Chaque dossier retrouvé en quelques secondes</li></ul></article>
+        <article class="carte voile"><h3>Vos rendez-vous et vos clients</h3><p>Garages, ateliers, commerces, services de proximité.</p><ul><li>Prise de rendez-vous en ligne</li><li>Rappels et offres par notification</li><li>Acompte à la réservation</li></ul></article>
+        <article class="carte voile"><h3>Votre restaurant</h3><p>Restauration rapide, salle, vente à emporter.</p><ul><li>Commande à table par QR code, envoyée en cuisine</li><li>Écrans de menu derrière le comptoir</li><li>Commande en ligne et fidélité</li></ul></article>
+        <article class="carte voile"><h3>Votre vitrine</h3><p>Pour toute activité qui veut être trouvée et comprise.</p><ul><li>Site clair et rapide</li><li>Application à votre nom</li><li>Pensé d'abord pour le téléphone</li></ul></article>
+        <article class="carte voile"><h3>Votre pilotage</h3><p>Pour le dirigeant qui veut tout voir d'un coup d'œil.</p><ul><li>Chiffres et demandes sur un tableau de bord</li><li>Suivi de l'activité en temps réel</li><li>Données prêtes pour votre comptable</li></ul></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="materiel" class="bande">
+    <div class="conteneur">
+      <div class="sur voile">Un système complet</div>
+      <h2 class="voile">Logiciel, matériel, installation : on s'occupe de tout.</h2>
+      <p class="chapo voile">Si votre activité demande du matériel, nous le fournissons et nous l'installons avec l'outil. Vous n'avez qu'un seul interlocuteur.</p>
+      <div class="grille quatre">
+        <article class="carte voile"><h3>Tablettes et téléphones</h3><p>Pour vos équipes, déjà configurés avec votre outil et prêts à partir sur le terrain.</p></article>
+        <article class="carte voile"><h3>Écran de cuisine</h3><p>Les commandes passées à table s'affichent en cuisine dans l'ordre, sans ticket perdu ni aller-retour.</p></article>
+        <article class="carte voile"><h3>Écrans d'affichage</h3><p>Menus, tarifs et offres affichés derrière le comptoir, modifiables à distance en quelques secondes.</p></article>
+        <article class="carte voile"><h3>Installation et formation</h3><p>Nous installons sur place, nous formons votre équipe et nous restons joignables ensuite.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="methode">
+    <div class="conteneur">
+      <div class="sur voile">Comment ça se passe</div>
+      <h2 class="voile">Une méthode simple, en quatre étapes.</h2>
+      <div class="grille quatre">
+        <article class="carte voile"><div class="etape">ÉTAPE 1</div><h3>On vous écoute</h3><p>Nous observons votre façon de travailler et ce qui vous fait perdre du temps.</p></article>
+        <article class="carte voile"><div class="etape">ÉTAPE 2</div><h3>On construit</h3><p>Vous voyez l'outil avancer et vous l'essayez avant qu'il soit terminé.</p></article>
+        <article class="carte voile"><div class="etape">ÉTAPE 3</div><h3>On vous forme</h3><p>Prise en main avec vous et votre équipe, sur vos propres cas.</p></article>
+        <article class="carte voile"><div class="etape">ÉTAPE 4</div><h3>On reste là</h3><p>Évolutions, corrections, nouvelles idées : l'outil grandit avec vous.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <div class="conteneur">
+      <div class="sur voile">Contact</div>
+      <h2 class="voile">Parlons de votre projet.</h2>
+      <p class="chapo voile">Décrivez-nous votre activité en quelques lignes. Nous revenons vers vous avec une première proposition, sur devis.</p>
+      <div class="actions voile"><a class="bouton" href="mailto:appnco.app@gmail.com?subject=Projet%20App%26Co">appnco.app@gmail.com</a></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="conteneur">
+    <span class="logo" style="font-size:1.1rem"><span class="icone"><span>&amp;</span></span><span>App<span class="bleu">&amp;</span>Co</span></span>
+    <span>© 2026 App&amp;Co · Applications &amp; sites web sur mesure</span>
+  </div>
+</footer>
+
+<script>
+// L'écran d'ouverture ne joue qu'une fois par visite.
+// L'ecran d'ouverture ne joue qu'une fois par visite (le reste est en CSS).
+try{if(sessionStorage.getItem('ouv')){document.documentElement.classList.add('deja');document.getElementById('ouverture').remove()}else{sessionStorage.setItem('ouv','1')}}catch(e){}
+// Apparition des blocs au défilement.
+var obs=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('vu');obs.unobserve(e.target)}})},{threshold:.12});
+document.querySelectorAll('.voile').forEach(function(el){obs.observe(el)});
+// Bouton d'installation (affiché seulement quand le navigateur le permet).
+var invite=null,btn=document.getElementById('installer');
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();invite=e;btn.hidden=false});
+btn.addEventListener('click',function(){if(invite){invite.prompt();invite=null;btn.hidden=true}});
+if('serviceWorker' in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('sw.js').catch(function(){})}
+</script>
+</body>
+</html>

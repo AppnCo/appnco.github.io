@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>App&amp;Co — Applications &amp; sites web sur mesure</title>
+<meta name="description" content="App&Co conçoit des applications, des sites web et des outils métier sur mesure, matériel et installation compris.">
+<meta name="theme-color" content="#0B0B0F">
+<script>document.documentElement.className='js'</script>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+/*FONT*/@font-face{font-family:Outfit;src:url(fonts/Outfit.ttf) format("truetype");font-weight:100 900;font-display:swap}/*FONT*/
+:root{--noir:#0B0B0F;--trait:#1F1F29;--blanc:#F5F6FA;--gris:#9498A8;--bleu:#2F5BFF;--bleu-clair:#7C97FF}
+*{box-sizing:border-box;margin:0}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{background:var(--noir);color:var(--blanc);font-family:Outfit,system-ui,sans-serif;font-size:17px;font-weight:400;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.conteneur{max-width:1080px;margin:0 auto;padding:0 22px}
+section{padding:84px 0}
+@media(min-width:860px){section{padding:128px 0}}
+h1{font-size:clamp(2.5rem,7.6vw,5rem);line-height:1.02;font-weight:600;letter-spacing:-.03em}
+h2{font-size:clamp(1.9rem,4.4vw,3rem);line-height:1.08;font-weight:600;letter-spacing:-.025em}
+h3{font-size:1.18rem;font-weight:500;letter-spacing:-.01em}
+.bleu{color:var(--bleu)}
+.sur{color:var(--gris);font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;margin-bottom:22px;display:flex;align-items:center;gap:12px}
+.sur::before{content:"";width:22px;height:1px;background:var(--bleu)}
+.chapo{color:var(--gris);font-size:1.15rem;max-width:560px;margin-top:20px}
+.tete{margin-bottom:56px}
+
+/* logo */
+.logo{display:inline-flex;align-items:center;gap:.3em;font-weight:700;font-size:1.45rem;letter-spacing:-.01em}
+.icone{display:inline-grid;place-items:center;width:1.12em;height:1.12em;border-radius:25%;background:var(--bleu);color:#fff;flex:none}
+.icone span{font-size:.82em;line-height:1;transform:translateY(-.02em)}
+
+/* barre du haut */
+header{position:sticky;top:0;z-index:20;background:rgba(11,11,15,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--trait)}
+header .conteneur{display:flex;align-items:center;justify-content:space-between;height:64px}
+nav{display:flex;gap:30px;align-items:center;font-size:.93rem;color:var(--gris)}
+nav a{transition:color .15s}
+nav a:hover{color:var(--blanc)}
+nav .lien{display:none}
+@media(min-width:860px){nav .lien{display:inline}}
+
+.bouton{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--bleu);color:#fff;font-weight:500;font-size:1rem;padding:15px 26px;border-radius:999px;border:0;cursor:pointer;font-family:inherit;transition:background .15s,transform .15s}
+.bouton:hover{background:#4169ff;transform:translateY(-1px)}
+.bouton.petit{padding:9px 18px;font-size:.9rem}
+.bouton.clair{background:var(--blanc);color:#0B0B0F}
+.bouton.clair:hover{background:#fff}
+.fleche{display:inline-flex;align-items:center;gap:8px;color:var(--blanc);font-weight:500;border-bottom:1px solid var(--trait);padding-bottom:3px;transition:border-color .15s}
+.fleche:hover{border-color:var(--bleu)}
+.fleche::after{content:"→";color:var(--bleu)}
+
+/* accueil */
+.accueil{padding:96px 0 0;position:relative;overflow:hidden}
+@media(min-width:860px){.accueil{padding:150px 0 0}}
+.accueil::before{content:"";position:absolute;left:50%;top:-340px;width:900px;height:700px;transform:translateX(-18%);background:radial-gradient(closest-side,rgba(47,91,255,.20),transparent);pointer-events:none}
+.accueil .conteneur{position:relative}
+.accueil h1{max-width:13ch}
+.accueil .chapo{font-size:1.25rem;margin:28px 0 40px}
+.actions{display:flex;flex-wrap:wrap;gap:26px;align-items:center}
+.reperes{display:grid;grid-template-columns:repeat(2,1fr);margin-top:88px;border-top:1px solid var(--trait)}
+.reperes div{padding:22px 0;color:var(--gris);font-size:.95rem;border-bottom:1px solid var(--trait)}
+.reperes b{display:block;color:var(--blanc);font-weight:500;font-size:1.02rem}
+@media(min-width:860px){.reperes{grid-template-columns:repeat(4,1fr);margin-top:120px}.reperes div{border-bottom:0;padding:26px 24px 26px 0}}
+
+/* colonnes sobres (services, matériel) */
+.colonnes{display:grid;gap:44px}
+@media(min-width:860px){.colonnes.trois{grid-template-columns:repeat(3,1fr);gap:56px}.colonnes.quatre{grid-template-columns:repeat(4,1fr);gap:40px}}
+.colonnes article p{color:var(--gris);font-size:.98rem;margin-top:10px}
+.picto{width:46px;height:46px;border:1px solid var(--trait);border-radius:14px;display:grid;place-items:center;margin-bottom:22px;color:var(--bleu-clair)}
+.picto svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* lignes « pour qui » */
+.lignes{border-top:1px solid var(--trait)}
+.ligne{display:grid;gap:14px;padding:30px 0;border-bottom:1px solid var(--trait);transition:background .2s}
+.ligne small{display:block;color:var(--gris);font-size:.93rem;margin-top:6px}
+.ligne ul{list-style:none;padding:0;color:var(--gris);font-size:.97rem}
+.ligne li{padding:3px 0 3px 20px;position:relative}
+.ligne li::before{content:"";position:absolute;left:0;top:.82em;width:8px;height:1px;background:var(--bleu)}
+.ligne h3{font-size:1.32rem}
+@media(min-width:860px){.ligne{grid-template-columns:5fr 6fr;gap:40px;padding:38px 0;align-items:start}}
+
+/* méthode */
+.etapes{display:grid;gap:0;border-top:1px solid var(--trait)}
+.etapes article{padding:30px 0;border-bottom:1px solid var(--trait)}
+.etapes .num{font-size:.85rem;color:var(--bleu-clair);letter-spacing:.1em;margin-bottom:14px}
+.etapes p{color:var(--gris);font-size:.97rem;margin-top:8px}
+@media(min-width:860px){.etapes{grid-template-columns:repeat(4,1fr)}.etapes article{border-bottom:0;padding:34px 28px 0 0}}
+
+/* contact */
+.contact .panneau{border:1px solid var(--trait);border-radius:28px;padding:56px 26px;text-align:center;background:radial-gradient(120% 140% at 50% 0%,rgba(47,91,255,.14),transparent 60%)}
+.contact .chapo{margin:20px auto 36px}
+@media(min-width:860px){.contact .panneau{padding:96px 40px}}
+footer{border-top:1px solid var(--trait);padding:34px 0 48px;color:var(--gris);font-size:.88rem}
+footer .conteneur{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
+
+/* apparition au défilement (seulement si les scripts fonctionnent) */
+html.js .voile{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}
+html.js .voile.vu{opacity:1;transform:none}
+
+/* écran d'ouverture, en CSS pur : le point tombe, devient l'icône, le & surgit, le nom sort, puis le logo monte à sa place */
+#ouverture{position:fixed;inset:0;z-index:100;background:var(--noir);animation:ouv-fond .6s ease 3.05s forwards,ouv-fin .01s linear 3.7s forwards}
+header .logo{animation:ouv-cible .01s linear 3.62s backwards}
+html.deja header .logo{animation:none}
+#ouverture .scene{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;font-weight:700;font-size:clamp(34px,9vw,64px);letter-spacing:-.01em;line-height:1.6;
+  animation:ouv-monte .85s cubic-bezier(.65,0,.35,1) 2.75s forwards}
+#ouverture .ic{width:.4em;height:.4em;border-radius:50%;background:var(--bleu);display:grid;place-items:center;flex:none;
+  animation:ouv-chute .78s cubic-bezier(.5,0,1,.55) both,ouv-forme .5s cubic-bezier(.34,1.7,.64,1) .82s forwards,ouv-taille .7s cubic-bezier(.65,0,.35,1) 1.75s forwards}
+#ouverture .ic span{color:#fff;font-size:.82em;line-height:1;opacity:0;transform:scale(0) rotate(-38deg);animation:ouv-esp .6s cubic-bezier(.34,1.9,.64,1) 1.04s forwards}
+#ouverture .nom{white-space:nowrap;overflow:hidden;max-width:0;opacity:0;padding-left:0;animation:ouv-nom .8s cubic-bezier(.16,1,.3,1) 1.8s forwards}
+@keyframes ouv-monte{to{left:max(22px,calc(50vw - 518px));top:32px;transform:translate(0,-50%);font-size:1.45rem}}
+@keyframes ouv-fond{to{background-color:transparent}}
+@keyframes ouv-fin{to{visibility:hidden}}
+@keyframes ouv-cible{from{opacity:0}}
+@keyframes ouv-chute{0%{transform:translateY(-60vh)}55%{transform:translateY(0) scale(1.3,.7)}72%{transform:translateY(-16vh) scale(1)}100%{transform:translateY(0)}}
+@keyframes ouv-forme{to{width:1.55em;height:1.55em;border-radius:25%}}
+@keyframes ouv-taille{from{width:1.55em;height:1.55em}to{width:1.12em;height:1.12em;border-radius:25%}}
+@keyframes ouv-esp{to{opacity:1;transform:none}}
+@keyframes ouv-nom{to{max-width:6em;opacity:1;padding-left:.3em}}
+@media(prefers-reduced-motion:reduce){#ouverture{display:none}header .logo{animation:none}html.js .voile{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<div id="ouverture" aria-hidden="true"><div class="scene"><div class="ic"><span>&amp;</span></div><div class="nom">App<span class="bleu">&amp;</span>Co</div></div></div>
+
+<header>
+  <div class="conteneur">
+    <a class="logo" href="#haut" aria-label="App&Co, retour en haut"><span class="icone"><span>&amp;</span></span><span>App<span class="bleu">&amp;</span>Co</span></a>
+    <nav>
+      <a class="lien" href="#services">Services</a>
+      <a class="lien" href="#metiers">Pour qui</a>
+      <a class="lien" href="#materiel">Matériel</a>
+      <a class="lien" href="#methode">Méthode</a>
+      <a class="bouton petit" href="#contact">Nous contacter</a>
+    </nav>
+  </div>
+</header>
+
+<main id="haut">
+  <section class="accueil">
+    <div class="conteneur">
+      <div class="sur">Applications · Sites web · Outils métier</div>
+      <h1>Applications <span class="bleu">&amp;</span> sites web sur mesure.</h1>
+      <p class="chapo">Des outils pensés pour votre métier. On simplifie votre quotidien.</p>
+      <div class="actions">
+        <a class="bouton" href="#contact">Parler de votre projet</a>
+        <a class="fleche" href="#services">Découvrir nos solutions</a>
+        <button class="bouton clair petit" id="installer" hidden>Installer l'application</button>
+      </div>
+      <div class="reperes">
+        <div><b>Sur mesure</b>Conçu autour de votre activité</div>
+        <div><b>Matériel fourni</b>Tablettes, écrans, QR codes</div>
+        <div><b>Installation sur place</b>Et formation de vos équipes</div>
+        <div><b>Un seul interlocuteur</b>Du premier échange au suivi</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="services">
+    <div class="conteneur">
+      <div class="tete">
+        <div class="sur voile">Ce que nous faisons</div>
+        <h2 class="voile">Trois façons de vous faire gagner du temps.</h2>
+      </div>
+      <div class="colonnes trois">
+        <article class="voile"><div class="picto"><svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg></div><h3>Application sur mesure</h3><p>Une application à votre nom, sur le téléphone de vos clients : réservations, notifications, suivi.</p></article>
+        <article class="voile"><div class="picto"><svg viewBox="0 0 24 24"><rect x="2.5" y="4" width="19" height="16" rx="2.5"/><path d="M2.5 9h19M6 6.5h.01M9 6.5h.01"/></svg></div><h3>Site web</h3><p>Un site clair et rapide, pensé d'abord pour le téléphone, qui transforme les visiteurs en demandes.</p></article>
+        <article class="voile"><div class="picto"><svg viewBox="0 0 24 24"><path d="M9 4h6v3H9z"/><path d="M9 5.5H6.5A1.5 1.5 0 0 0 5 7v12.5A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.500-1.500V7a1.500 1.500 0 0 0-1.500-1.500H15"/><path d="M8.500 12.500l2 2 4-4.500"/></svg></div><h3>Outil métier</h3><p>Le logiciel de votre équipe : interventions, rapports, contrats, planning, tableau de bord.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="metiers">
+    <div class="conteneur">
+      <div class="tete">
+        <div class="sur voile">Pour qui</div>
+        <h2 class="voile">Quel que soit votre métier.</h2>
+        <p class="chapo voile">Nous partons de votre besoin, pas d'une liste de professions.</p>
+      </div>
+      <div class="lignes">
+        <article class="ligne voile"><div><h3>Vos équipes sur le terrain</h3><small>Maintenance, sécurité incendie, bâtiment, nettoyage, gardiennage</small></div><ul><li>Interventions et rapports saisis sur place</li><li>Un QR code par équipement, un scan par contrôle</li><li>Photos horodatées, signature du client, rapport en PDF</li></ul></article>
+        <article class="ligne voile"><div><h3>Vos contrats et vos preuves</h3><small>Location, dépannage, transport, événementiel</small></div><ul><li>Contrats et états des lieux sur écran</li><li>Signature au doigt, pièces en photo</li><li>Chaque dossier retrouvé en quelques secondes</li></ul></article>
+        <article class="ligne voile"><div><h3>Vos rendez-vous et vos clients</h3><small>Garages, ateliers, commerces, services de proximité</small></div><ul><li>Prise de rendez-vous en ligne</li><li>Rappels et offres par notification</li><li>Acompte à la réservation</li></ul></article>
+        <article class="ligne voile"><div><h3>Votre restaurant</h3><small>Restauration rapide, salle, vente à emporter</small></div><ul><li>Commande à table par QR code, envoyée en cuisine</li><li>Écrans de menu derrière le comptoir</li><li>Commande en ligne et fidélité</li></ul></article>
+        <article class="ligne voile"><div><h3>Votre pilotage</h3><small>Pour le dirigeant qui veut tout voir d'un coup d'œil</small></div><ul><li>Chiffres et demandes sur un tableau de bord</li><li>Suivi de l'activité en temps réel</li><li>Données prêtes pour votre comptable</li></ul></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="materiel">
+    <div class="conteneur">
+      <div class="tete">
+        <div class="sur voile">Un système complet</div>
+        <h2 class="voile">Logiciel, matériel, installation.</h2>
+        <p class="chapo voile">Si votre activité demande du matériel, nous le fournissons et nous l'installons avec l'outil.</p>
+      </div>
+      <div class="colonnes quatre">
+        <article class="voile"><div class="picto"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2.500"/><path d="M11 17.500h2"/></svg></div><h3>Tablettes et téléphones</h3><p>Configurés avec votre outil, prêts à partir sur le terrain.</p></article>
+        <article class="voile"><div class="picto"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20.500 14v.01M20.500 20.500v.01M17 20.500h.01M20.500 17.500h.01"/></svg></div><h3>QR codes</h3><p>Posés sur vos équipements, vos tables ou vos chambres.</p></article>
+        <article class="voile"><div class="picto"><svg viewBox="0 0 24 24"><rect x="2.500" y="4" width="19" height="12.500" rx="2"/><path d="M8.500 20.500h7M12 16.500v4"/></svg></div><h3>Écrans d'affichage</h3><p>Menus, tarifs et commandes, modifiables à distance.</p></article>
+        <article class="voile"><div class="picto"><svg viewBox="0 0 24 24"><path d="M14.500 6.500a4 4 0 0 0-5.300 5.300L3.500 17.500v3h3l5.700-5.700a4 4 0 0 0 5.300-5.300l-2.700 2.700-2.300-2.300z"/></svg></div><h3>Installation et formation</h3><p>Sur place, avec vos équipes, puis un suivi dans la durée.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="methode">
+    <div class="conteneur">
+      <div class="tete">
+        <div class="sur voile">Méthode</div>
+        <h2 class="voile">Quatre étapes, sans surprise.</h2>
+      </div>
+      <div class="etapes">
+        <article class="voile"><div class="num">01</div><h3>On vous écoute</h3><p>Nous observons votre façon de travailler et ce qui vous fait perdre du temps.</p></article>
+        <article class="voile"><div class="num">02</div><h3>On construit</h3><p>Vous voyez l'outil avancer et vous l'essayez avant qu'il soit terminé.</p></article>
+        <article class="voile"><div class="num">03</div><h3>On installe</h3><p>Mise en service et prise en main avec votre équipe, sur vos propres cas.</p></article>
+        <article class="voile"><div class="num">04</div><h3>On reste là</h3><p>Évolutions, corrections, nouvelles idées : l'outil grandit avec vous.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <div class="conteneur">
+      <div class="panneau voile">
+        <h2>Parlons de votre projet.</h2>
+        <p class="chapo">Décrivez-nous votre activité en quelques lignes. Nous revenons vers vous avec une première proposition, sur devis.</p>
+        <a class="bouton" href="mailto:appnco.app@gmail.com?subject=Projet%20App%26Co">appnco.app@gmail.com</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="conteneur">
+    <span class="logo" style="font-size:1.1rem"><span class="icone"><span>&amp;</span></span><span>App<span class="bleu">&amp;</span>Co</span></span>
+    <span>© 2026 App&amp;Co · Applications &amp; sites web sur mesure</span>
+  </div>
+</footer>
+
+<script>
+// L'ecran d'ouverture ne joue qu'une fois par visite (le reste est en CSS).
+try{if(sessionStorage.getItem('ouv')){document.documentElement.classList.add('deja');document.getElementById('ouverture').remove()}else{sessionStorage.setItem('ouv','1')}}catch(e){}
+// Apparition des blocs au défilement.
+var obs=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('vu');obs.unobserve(e.target)}})},{threshold:.12});
+document.querySelectorAll('.voile').forEach(function(el){obs.observe(el)});
+// Bouton d'installation (affiché seulement quand le navigateur le permet).
+var invite=null,btn=document.getElementById('installer');
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();invite=e;btn.hidden=false});
+btn.addEventListener('click',function(){if(invite){invite.prompt();invite=null;btn.hidden=true}});
+if('serviceWorker' in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('sw.js').catch(function(){})}
+</script>
+</body>
+</html>
