@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0f1115">
+<title>Fluide — itinéraire sans bouchons</title>
+<style>
+  :root{--bg:#0f1115;--card:#181b22;--line:#2a2f3a;--txt:#e8eaf0;--mut:#9aa1b2;--ok:#2fbf71;--slow:#f2a93b;--jam:#e5484d;--acc:#4c8dff}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--txt);padding:16px;max-width:640px;margin-inline:auto}
+  h1{font-size:22px;margin:4px 0 2px}
+  .sub{color:var(--mut);font-size:13px;margin-bottom:16px}
+  label{display:block;font-size:13px;color:var(--mut);margin:12px 0 4px}
+  input,select,textarea{width:100%;padding:11px;border-radius:10px;border:1px solid var(--line);background:#11141a;color:var(--txt);font-size:16px}
+  textarea{min-height:70px}
+  .row{display:flex;gap:8px}.row>*{flex:1}
+  button{padding:13px;border:0;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;background:var(--acc);color:#fff;width:100%;margin-top:12px}
+  button.sec{background:#252a35}
+  button.small{width:auto;padding:8px 12px;font-size:14px;margin:0}
+  details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:14px}
+  summary{cursor:pointer;font-weight:600}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:12px}
+  .card.best{border-color:var(--ok);box-shadow:0 0 0 1px var(--ok) inset}
+  .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .name{font-weight:700}
+  .time{font-size:22px;font-weight:800;white-space:nowrap}
+  .badges{margin:6px 0}
+  .badge{display:inline-block;font-size:12px;padding:3px 8px;border-radius:99px;margin-right:6px;background:#252a35}
+  .badge.ok{background:rgba(47,191,113,.18);color:var(--ok)}
+  .badge.fast{background:rgba(76,141,255,.18);color:var(--acc)}
+  .bar{display:flex;height:10px;border-radius:6px;overflow:hidden;margin:8px 0;background:var(--ok)}
+  .bar span{display:block;height:100%}
+  .stats{font-size:13px;color:var(--mut);line-height:1.6}
+  .stats b{color:var(--txt)}
+  a.go{display:block;text-align:center;margin-top:10px;padding:11px;border-radius:10px;background:#252a35;color:var(--txt);text-decoration:none;font-weight:600}
+  .msg{margin-top:12px;padding:12px;border-radius:10px;background:#252a35;font-size:14px}
+  .msg.err{background:rgba(229,72,77,.15);color:#ff9a9d}
+  table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
+  td,th{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left}
+  .legend{font-size:12px;color:var(--mut);margin-top:6px}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin:0 4px 0 8px}
+</style>
+</head>
+<body>
+<h1>Fluide</h1>
+<div class="sub">Choisit l'itinéraire où tu roules le plus régulièrement, pas forcément le plus rapide.</div>
+
+<label for="origin">Départ</label>
+<div class="row">
+  <input id="origin" placeholder="Adresse de départ">
+  <button class="small sec" id="gps" type="button" style="flex:0 0 auto">📍 Ma position</button>
+</div>
+
+<label for="dest">Destination</label>
+<input id="dest" placeholder="Adresse du site d'intervention">
+
+<div class="row">
+  <div>
+    <label for="when">Départ</label>
+    <select id="when">
+      <option value="0">Maintenant</option>
+      <option value="15">Dans 15 min</option>
+      <option value="30">Dans 30 min</option>
+      <option value="45">Dans 45 min</option>
+      <option value="60">Dans 1 h</option>
+    </select>
+  </div>
+  <div>
+    <label for="tol">Temps perdu accepté</label>
+    <select id="tol">
+      <option value="5">+5 min max</option>
+      <option value="10" selected>+10 min max</option>
+      <option value="15">+15 min max</option>
+      <option value="20">+20 min max</option>
+    </select>
+  </div>
+</div>
+
+<button id="go" type="button">Trouver la route la plus fluide</button>
+<button id="times" class="sec" type="button">Comparer les heures de départ</button>
+
+<div id="out"></div>
+
+<details id="settings">
+  <summary>Réglages</summary>
+  <label for="key">Clé API Google (Routes API)</label>
+  <input id="key" type="password" placeholder="AIza..." autocomplete="off">
+  <label for="home">Adresse du domicile (départ par défaut)</label>
+  <input id="home" placeholder="ex : Rive-de-Gier">
+  <label for="vias">Points de passage à tester en plus (un par ligne)</label>
+  <textarea id="vias" placeholder="Mornant&#10;Brignais"></textarea>
+  <div class="legend">Chaque point de passage = un itinéraire alternatif forcé, en plus de ceux que Google propose.</div>
+  <button id="save" class="sec" type="button">Enregistrer</button>
+</details>
+
+<script>
+const $ = id => document.getElementById(id);
+const store = {
+  get(k, d=''){ try{ return localStorage.getItem('fluide_'+k) ?? d }catch(e){ return d } },
+  set(k, v){ try{ localStorage.setItem('fluide_'+k, v) }catch(e){} }
+};
+
+// ---------- Réglages ----------
+$('key').value = store.get('key');
+$('home').value = store.get('home');
+$('vias').value = store.get('vias');
+$('origin').value = store.get('home');
+$('dest').value = store.get('lastDest');
+if(!store.get('key')) $('settings').open = true;
+
+$('save').onclick = () => {
+  store.set('key', $('key').value.trim());
+  store.set('home', $('home').value.trim());
+  store.set('vias', $('vias').value.trim());
+  if(!$('origin').value) $('origin').value = $('home').value;
+  msg('Réglages enregistrés.');
+};
+
+let gpsPos = null;
+$('gps').onclick = () => {
+  if(!navigator.geolocation) return msg('Localisation indisponible sur ce navigateur.', true);
+  msg('Localisation en cours…');
+  navigator.geolocation.getCurrentPosition(p => {
+    gpsPos = {latitude:p.coords.latitude, longitude:p.coords.longitude};
+    $('origin').value = '📍 Ma position';
+    msg('Position trouvée.');
+  }, e => msg('Localisation refusée : ' + e.message, true), {enableHighAccuracy:true, timeout:10000});
+};
+$('origin').oninput = () => { gpsPos = null };
+
+function msg(t, err){ $('out').innerHTML = `<div class="msg ${err?'err':''}">${t}</div>` }
+
+// ---------- Outils géo ----------
+// Décode une polyline Google (format standard "encoded polyline")
+function decode(str){
+  let i=0, lat=0, lng=0, pts=[];
+  while(i<str.length){
+    let b, s=0, r=0;
+    do{ b=str.charCodeAt(i++)-63; r|=(b&31)<<s; s+=5 }while(b>=32);
+    lat += (r&1) ? ~(r>>1) : (r>>1);
+    s=0; r=0;
+    do{ b=str.charCodeAt(i++)-63; r|=(b&31)<<s; s+=5 }while(b>=32);
+    lng += (r&1) ? ~(r>>1) : (r>>1);
+    pts.push([lat/1e5, lng/1e5]);
+  }
+  return pts;
+}
+function hav(a,b){
+  const R=6371, toR=x=>x*Math.PI/180;
+  const dLat=toR(b[0]-a[0]), dLng=toR(b[1]-a[1]);
+  const h=Math.sin(dLat/2)**2+Math.cos(toR(a[0]))*Math.cos(toR(b[0]))*Math.sin(dLng/2)**2;
+  return 2*R*Math.asin(Math.sqrt(h));
+}
+
+// ---------- Appel Google Routes API ----------
+const FIELDS = [
+  'routes.duration','routes.staticDuration','routes.distanceMeters','routes.description',
+  'routes.polyline.encodedPolyline','routes.travelAdvisory.speedReadingIntervals'
+].join(',');
+
+function originObj(){
+  if(gpsPos) return {location:{latLng:gpsPos}};
+  return {address:$('origin').value.trim()};
+}
+
+async function computeRoutes({via, offsetMin}){
+  const body = {
+    origin: originObj(),
+    destination: {address:$('dest').value.trim()},
+    travelMode: 'DRIVE',
+    routingPreference: 'TRAFFIC_AWARE',
+    extraComputations: ['TRAFFIC_ON_POLYLINE'],
+    polylineQuality: 'HIGH_QUALITY',
+    languageCode: 'fr-FR',
+    units: 'METRIC'
+  };
+  if(via){ body.intermediates = [{address: via, via: true}] }
+  else { body.computeAlternativeRoutes = true }
+  if(offsetMin > 0) body.departureTime = new Date(Date.now() + offsetMin*60000).toISOString();
+
+  const res = await fetch('https://routes.googleapis.com/directions/v2:computeRoutes', {
+    method:'POST',
+    headers:{'Content-Type':'application/json','X-Goog-Api-Key':store.get('key'),'X-Goog-FieldMask':FIELDS},
+    body: JSON.stringify(body)
+  });
+  const data = await res.json();
+  if(!res.ok) throw new Error(data.error?.message || ('Erreur ' + res.status));
+  return (data.routes || []).map(r => analyse(r, via));
+}
+
+// ---------- Le cœur : score de fluidité ----------
+// Pour chaque itinéraire : km bouchés, km ralentis, et nombre de "coups de frein"
+// (passages de fluide à ralenti/bouché). Plus le score est bas, plus tu roules régulièrement.
+function analyse(r, via){
+  const pts = decode(r.polyline.encodedPolyline);
+  const cum = [0];
+  for(let i=1;i<pts.length;i++) cum.push(cum[i-1] + hav(pts[i-1], pts[i]));
+  const total = cum[cum.length-1] || 0.001;
+
+  const segs = (r.travelAdvisory?.speedReadingIntervals || []).map(s => {
+    const a = s.startPolylinePointIndex || 0;
+    const b = Math.min(s.endPolylinePointIndex || 0, pts.length-1);
+    return {speed: s.speed || 'NORMAL', km: Math.max(0, cum[b]-cum[a])};
+  });
+
+  let jamKm=0, slowKm=0, brakes=0, prev='NORMAL';
+  for(const s of segs){
+    if(s.speed==='TRAFFIC_JAM') jamKm += s.km;
+    if(s.speed==='SLOW') slowKm += s.km;
+    if(prev==='NORMAL' && s.speed!=='NORMAL') brakes++;
+    prev = s.speed;
+  }
+  const dur = parseInt(r.duration) / 60;
+  const stat = parseInt(r.staticDuration || r.duration) / 60;
+  const score = jamKm*4 + slowKm*1.5 + brakes*1.5;
+
+  return {
+    name: r.description || 'Itinéraire', via, pts, segs, total,
+    dur, delay: Math.max(0, dur - stat), km: r.distanceMeters/1000,
+    jamKm, slowKm, brakes, score,
+    sig: Math.round(r.distanceMeters/200) + '|' + Math.round(dur)
+  };
+}
+
+async function allRoutes(offsetMin){
+  const vias = store.get('vias').split('\n').map(s=>s.trim()).filter(Boolean);
+  const jobs = [computeRoutes({offsetMin})].concat(vias.map(v => computeRoutes({via:v, offsetMin}).catch(()=>[])));
+  const lists = await Promise.all(jobs);
+  // Supprime les doublons (même distance et même durée)
+  const seen = new Set(), out = [];
+  for(const r of lists.flat()){ if(!seen.has(r.sig)){ seen.add(r.sig); out.push(r) } }
+  return out;
+}
+
+function pick(routes, tol){
+  const fastest = Math.min(...routes.map(r=>r.dur));
+  const ok = routes.filter(r => r.dur <= fastest + tol);
+  ok.sort((a,b) => a.score - b.score || a.dur - b.dur);
+  return {fastest, best: ok[0]};
+}
+
+// Lien Google Maps qui force l'itinéraire via 3 points pris le long du tracé
+function mapsLink(r){
+  const P = r.pts, w = [0.25,0.5,0.75].map(f => P[Math.floor(f*(P.length-1))]);
+  const o = gpsPos ? `${gpsPos.latitude},${gpsPos.longitude}` : $('origin').value.trim();
+  return 'https://www.google.com/maps/dir/?api=1&travelmode=driving'
+    + '&origin=' + encodeURIComponent(o)
+    + '&destination=' + encodeURIComponent($('dest').value.trim())
+    + '&waypoints=' + encodeURIComponent(w.map(p=>p[0].toFixed(5)+','+p[1].toFixed(5)).join('|'));
+}
+
+function bar(r){
+  const col = {NORMAL:'var(--ok)', SLOW:'var(--slow)', TRAFFIC_JAM:'var(--jam)'};
+  if(!r.segs.length) return '<div class="bar"></div>';
+  return '<div class="bar">' + r.segs.map(s =>
+    `<span style="width:${(s.km/r.total*100).toFixed(2)}%;background:${col[s.speed]||col.NORMAL}"></span>`).join('') + '</div>';
+}
+
+function check(){
+  if(!store.get('key')){ $('settings').open = true; msg('Ajoute ta clé API dans Réglages puis Enregistrer.', true); return false }
+  if(!$('dest').value.trim()){ msg('Indique une destination.', true); return false }
+  if(!gpsPos && !$('origin').value.trim()){ msg('Indique un départ.', true); return false }
+  store.set('lastDest', $('dest').value.trim());
+  return true;
+}
+
+// ---------- Bouton principal ----------
+$('go').onclick = async () => {
+  if(!check()) return;
+  msg('Analyse du trafic sur chaque itinéraire…');
+  try{
+    const routes = await allRoutes(+$('when').value);
+    if(!routes.length) return msg('Aucun itinéraire trouvé.', true);
+    const tol = +$('tol').value;
+    const {fastest, best} = pick(routes, tol);
+    routes.sort((a,b) => (a===best?-1:b===best?1:0) || a.score - b.score);
+
+    let html = `<div class="legend">Tracé : <span class="dot" style="background:var(--ok)"></span>fluide<span class="dot" style="background:var(--slow)"></span>ralenti<span class="dot" style="background:var(--jam)"></span>bouché</div>`;
+    for(const r of routes){
+      const extra = r.dur - fastest;
+      const isFast = Math.abs(extra) < 0.5;
+      html += `<div class="card ${r===best?'best':''}">
+        <div class="top"><div class="name">${r.via ? 'Via ' + r.via : r.name}</div><div class="time">${Math.round(r.dur)} min</div></div>
+        <div class="badges">
+          ${r===best ? '<span class="badge ok">Le plus fluide</span>' : ''}
+          ${isFast ? '<span class="badge fast">Le plus rapide</span>' : `<span class="badge">+${Math.round(extra)} min</span>`}
+          ${extra > tol ? '<span class="badge">hors tolérance</span>' : ''}
+        </div>
+        ${bar(r)}
+        <div class="stats">
+          <b>${r.jamKm.toFixed(1)} km</b> bouchés · <b>${r.slowKm.toFixed(1)} km</b> ralentis · <b>${r.brakes}</b> zone(s) de freinage<br>
+          ${r.km.toFixed(0)} km · retard dû au trafic : ${Math.round(r.delay)} min
+        </div>
+        <a class="go" href="${mapsLink(r)}" target="_blank" rel="noopener">Ouvrir dans Google Maps</a>
+      </div>`;
+    }
+    $('out').innerHTML = html;
+  }catch(e){ msg('Erreur : ' + e.message, true) }
+};
+
+// ---------- Comparer les heures de départ ----------
+$('times').onclick = async () => {
+  if(!check()) return;
+  msg('Comparaison de 5 heures de départ…');
+  try{
+    const tol = +$('tol').value, offs = [0,15,30,45,60];
+    const res = await Promise.all(offs.map(o => allRoutes(o).then(rs => ({o, ...pick(rs, tol)}))));
+    const fmt = o => { const d = new Date(Date.now()+o*60000); return d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) };
+    const bestRow = res.reduce((a,b) => b.best.score < a.best.score ? b : a);
+    let html = `<div class="card"><div class="name">Meilleure route selon l'heure de départ</div><table>
+      <tr><th>Départ</th><th>Route</th><th>Durée</th><th>Bouché</th></tr>`;
+    for(const r of res){
+      html += `<tr style="${r===bestRow?'color:var(--ok);font-weight:700':''}"><td>${fmt(r.o)}</td>
+        <td>${r.best.via ? 'Via '+r.best.via : r.best.name}</td><td>${Math.round(r.best.dur)} min</td>
+        <td>${r.best.jamKm.toFixed(1)} km</td></tr>`;
+    }
+    html += `</table><div class="legend">En vert : le départ où tu rouleras le plus régulièrement.</div></div>`;
+    $('out').innerHTML = html;
+  }catch(e){ msg('Erreur : ' + e.message, true) }
+};
+</script>
+</body>
+</html>
